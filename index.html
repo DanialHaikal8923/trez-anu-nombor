@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#174a7c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Trez-Anu" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Trez-Anu Nombor</title>
+  <style>
+    body { margin:0; padding:16px; background:#eef4fb; font-family:Arial,sans-serif; }
+    #trez-anu-nombor { max-width:980px; margin:24px auto; background:linear-gradient(180deg,#f7fbff 0%,#eef6ff 100%); border-radius:24px; padding:30px 24px 26px; box-shadow:0 12px 28px rgba(0,0,0,0.10); color:#1f2d3d; }
+    #trez-anu-nombor * { box-sizing:border-box; }
+    #trez-anu-nombor h2 { text-align:center; margin:0 0 8px; font-size:30px; color:#174a7c; }
+    #trez-anu-nombor .sub { text-align:center; margin-bottom:20px; font-size:16px; color:#54708a; }
+    #trez-anu-nombor .scenario-box, #trez-anu-nombor .equation-builder-box { background:#fff; border-radius:18px; padding:18px 20px; margin:0 auto 20px; box-shadow:inset 0 0 0 2px rgba(23,74,124,0.08); }
+    #trez-anu-nombor .scenario-box { border-left:6px solid #1976d2; }
+    #trez-anu-nombor .equation-builder-box { border-left:6px solid #ef6c00; }
+    #trez-anu-nombor .scenario-title, #trez-anu-nombor .builder-title { font-size:17px; font-weight:bold; color:#174a7c; margin-bottom:10px; }
+    #trez-anu-nombor .scenario-text { font-size:18px; line-height:1.7; color:#2d4053; }
+    #trez-anu-nombor .builder-instruction { font-size:16px; color:#42586d; margin-bottom:12px; }
+    #trez-anu-nombor .equation-line { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-bottom:14px; font-size:28px; font-weight:bold; color:#174a7c; }
+    #trez-anu-nombor .drop-slot { min-width:130px; min-height:60px; padding:10px 16px; border:2.5px dashed #90a4ae; border-radius:14px; background:#f8fbff; display:flex; justify-content:center; align-items:center; font-size:28px; font-weight:bold; color:#90a4ae; transition:0.2s ease; }
+    #trez-anu-nombor .drop-slot.filled { border-style:solid; border-color:#1976d2; color:#0d47a1; background:#eef6ff; }
+    #trez-anu-nombor .drop-slot.over { transform:scale(1.03); border-color:#ef6c00; background:#fff8f1; }
+    #trez-anu-nombor .fixed-part { padding:8px 2px; color:#174a7c; }
+    #trez-anu-nombor .token-bank { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+    #trez-anu-nombor .token { padding:10px 16px; border-radius:12px; background:linear-gradient(135deg,#ffffff,#eef6ff); border:2px solid #bbdefb; box-shadow:0 4px 10px rgba(0,0,0,0.06); cursor:grab; user-select:none; font-size:22px; font-weight:bold; color:#174a7c; }
+    #trez-anu-nombor .token:active { cursor:grabbing; }
+    #trez-anu-nombor .builder-actions, #trez-anu-nombor .controls, #trez-anu-nombor .teacher-panel { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:14px; }
+    #trez-anu-nombor .triangle-stage { display:flex; justify-content:center; align-items:flex-start; min-height:500px; overflow-x:auto; }
+    #trez-anu-nombor .diagram { position:relative; width:760px; height:430px; flex:0 0 auto; }
+    #trez-anu-nombor .top-box { position:absolute; top:0; left:50%; transform:translateX(-50%); min-width:180px; text-align:center; background:#fff; border:3px solid #1e88e5; border-radius:16px; padding:10px 22px; font-size:32px; font-weight:bold; color:#0d47a1; box-shadow:0 8px 18px rgba(30,136,229,0.14); z-index:5; }
+    #trez-anu-nombor .triangle { position:absolute; left:50%; top:76px; transform:translateX(-50%); width:0; height:0; border-left:190px solid transparent; border-right:190px solid transparent; border-bottom:235px solid #d8ebff; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.08)); z-index:1; }
+    #trez-anu-nombor .triangle::after { content:""; position:absolute; left:-173px; top:16px; width:0; height:0; border-left:173px solid transparent; border-right:173px solid transparent; border-bottom:212px solid #ffffff; }
+    #trez-anu-nombor .triangle-text { position:absolute; top:182px; left:50%; transform:translateX(-50%); z-index:3; text-align:center; font-size:32px; font-weight:bold; line-height:1.2; color:#24507a; }
+    #trez-anu-nombor .minus-left, #trez-anu-nombor .minus-right, #trez-anu-nombor .plus-bottom { position:absolute; font-weight:bold; line-height:1; z-index:4; }
+    #trez-anu-nombor .minus-left { top:183px; left:178px; font-size:52px; color:#e53935; }
+    #trez-anu-nombor .minus-right { top:183px; right:178px; font-size:52px; color:#e53935; }
+    #trez-anu-nombor .plus-bottom { left:50%; top:322px; transform:translateX(-50%); font-size:56px; color:#2e7d32; }
+    #trez-anu-nombor .bottom-left { position:absolute; left:50%; top:300px; transform:translateX(-244px); background:#fff; border:3px solid #90caf9; border-radius:16px; padding:10px 14px; min-width:145px; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.10); z-index:5; }
+    #trez-anu-nombor .bottom-left input { width:108px; font-size:26px; text-align:center; border:none; outline:none; background:transparent; font-weight:bold; color:#1f2d3d; }
+    #trez-anu-nombor .bottom-right { position:absolute; left:50%; top:300px; transform:translateX(96px); background:#fff; border:3px solid #ce93d8; border-radius:16px; padding:10px 18px; min-width:145px; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.10); font-size:28px; font-weight:bold; color:#6a1b9a; z-index:5; }
+    #trez-anu-nombor button { border:none; padding:12px 18px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; transition:transform 0.18s ease, box-shadow 0.18s ease; box-shadow:0 6px 14px rgba(0,0,0,0.08); }
+    #trez-anu-nombor button:hover { transform:translateY(-2px); box-shadow:0 9px 18px rgba(0,0,0,0.12); }
+    #trez-anu-nombor .btn-sem { background:#1976d2; color:white; }
+    #trez-anu-nombor .btn-jwp { background:#ef6c00; color:white; }
+    #trez-anu-nombor .btn-baru { background:#2e7d32; color:white; }
+    #trez-anu-nombor .btn-guru, #trez-anu-nombor .btn-reset-equation { background:#6a1b9a; color:white; }
+    #trez-anu-nombor .btn-sem-eq { background:#00897b; color:white; }
+    #trez-anu-nombor .message, #trez-anu-nombor .equation-message { margin-top:18px; text-align:center; font-size:18px; font-weight:bold; min-height:28px; }
+    #trez-anu-nombor .equation-message { margin-top:12px; }
+    #trez-anu-nombor .working { margin-top:16px; background:#fff; border-radius:18px; padding:24px 18px; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.06); font-size:18px; line-height:1.9; display:none; }
+    #trez-anu-nombor .working-title { text-align:center; font-size:24px; font-weight:800; color:#0d2b59; margin-bottom:6px; }
+    #trez-anu-nombor .working-subtitle { text-align:center; font-size:15px; color:#42586d; margin-bottom:18px; font-weight:600; }
+    #trez-anu-nombor .working-panel { border:2px solid #d5dee8; border-radius:18px; padding:18px; background:#fcfdff; max-width:860px; margin:0 auto; }
+    #trez-anu-nombor .working-step { font-size:18px; font-weight:800; color:#1d4ed8; margin-bottom:18px; }
+    #trez-anu-nombor .column-layout { width:470px; margin:0 auto; }
+    #trez-anu-nombor .place-header, #trez-anu-nombor .number-grid { display:grid; grid-template-columns:48px repeat(5, 1fr); column-gap:0; align-items:stretch; }
+    #trez-anu-nombor .place-header { margin-bottom:18px; }
+    #trez-anu-nombor .place-header .blank-cell { background:transparent; }
+    #trez-anu-nombor .place-cell { border:1px solid #b8cff0; background:#edf4fb; min-height:78px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:14px; color:#1d4ed8; font-weight:700; line-height:1.15; padding:4px; }
+    #trez-anu-nombor .number-grid { margin:10px 0; }
+    #trez-anu-nombor .sign-cell { display:flex; align-items:center; justify-content:center; font-size:56px; font-weight:800; color:#0b1f44; line-height:1; min-height:78px; }
+    #trez-anu-nombor .digit-cell { display:flex; align-items:center; justify-content:center; min-height:78px; font-size:46px; font-weight:800; color:#0b1f44; line-height:1; }
+    #trez-anu-nombor .answer-line { width:calc(100% - 48px); margin-left:48px; border-top:4px solid #42526b; margin-top:6px; margin-bottom:10px; }
+    #trez-anu-nombor .teacher-panel { display:none; background:#fff; padding:18px; border-radius:18px; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08); }
+    #trez-anu-nombor .teacher-panel input { padding:10px 12px; font-size:16px; border-radius:10px; border:1px solid #b0bec5; width:160px; }
+    #trez-anu-nombor .teacher-panel label { font-weight:bold; display:flex; flex-direction:column; gap:6px; }
+    #trez-anu-nombor .credit { text-align:center; margin-top:22px; font-size:14px; color:#607d8b; font-weight:bold; }
+    #installHint { text-align:center; margin-top:12px; font-size:14px; color:#607d8b; }
+    @media (max-width:820px){ #trez-anu-nombor .diagram{ transform:scale(0.84); transform-origin:top center; height:365px;} #trez-anu-nombor .triangle-stage{min-height:390px;} #trez-anu-nombor .column-layout{width:100%; max-width:470px;} }
+    @media (max-width:620px){ #trez-anu-nombor{padding:18px;} #trez-anu-nombor h2{font-size:24px;} #trez-anu-nombor .sub,#trez-anu-nombor .builder-instruction{font-size:14px;} #trez-anu-nombor .scenario-text{font-size:16px;} #trez-anu-nombor .drop-slot,#trez-anu-nombor .token{font-size:18px;} #trez-anu-nombor .equation-line{font-size:22px;} #trez-anu-nombor .diagram{transform:scale(0.60); transform-origin:top center; height:260px;} #trez-anu-nombor .triangle-stage{min-height:280px;} #trez-anu-nombor .controls{gap:10px;} #trez-anu-nombor button{padding:10px 14px; font-size:14px;} #trez-anu-nombor .working-title{font-size:21px;} #trez-anu-nombor .working-step{font-size:16px;} #trez-anu-nombor .place-cell{font-size:12px; min-height:62px;} #trez-anu-nombor .digit-cell{font-size:34px; min-height:62px;} #trez-anu-nombor .sign-cell{font-size:38px; min-height:62px;} #trez-anu-nombor .answer-line{width:calc(100% - 40px); margin-left:40px;} #trez-anu-nombor .place-header,#trez-anu-nombor .number-grid{grid-template-columns:40px repeat(5,1fr);} }
+  </style>
+</head>
+<body>
+  <div id="trez-anu-nombor">
+    <h2>Trez-Anu Nombor</h2>
+    <div class="sub">Baca soalan penyelesaian masalah, seret nombor ke tempat yang betul, kemudian masukkan nilai anu ke dalam Trez-Anu Nombor.</div>
+
+    <div class="scenario-box">
+      <div class="scenario-title">Soalan Penyelesaian Masalah</div>
+      <div class="scenario-text" id="scenarioText"></div>
+    </div>
+
+    <div class="equation-builder-box">
+      <div class="builder-title">Bina Ayat Matematik Melibatkan Anu</div>
+      <div class="builder-instruction">Seret nombor sahaja ke kotak yang betul.</div>
+      <div class="equation-line">
+        <div class="drop-slot" data-slot="known">?</div>
+        <div class="fixed-part">+</div>
+        <div class="fixed-part">____</div>
+        <div class="fixed-part">=</div>
+        <div class="drop-slot" data-slot="total">?</div>
+      </div>
+      <div class="token-bank" id="tokenBank"></div>
+      <div class="builder-actions">
+        <button class="btn-sem-eq" onclick="checkEquation()">Semak Ayat Matematik</button>
+        <button class="btn-reset-equation" onclick="resetEquationBuilder()">Reset Ayat Matematik</button>
+        <button class="btn-guru" id="installBtn" style="display:none;">Pasang App</button>
+      </div>
+      <div class="equation-message" id="equationMessage"></div>
+      <div id="installHint">Di iPad/iPhone: buka dalam Safari → Share → Add to Home Screen.</div>
+    </div>
+
+    <div class="triangle-stage">
+      <div class="diagram">
+        <div class="top-box" id="topNumber"></div>
+        <div class="minus-left">−</div>
+        <div class="minus-right">−</div>
+        <div class="plus-bottom">+</div>
+        <div class="triangle"></div>
+        <div class="triangle-text">Trez-Anu<br>Nombor</div>
+        <div class="bottom-left"><input type="text" id="studentAnswer" placeholder="Anu"></div>
+        <div class="bottom-right" id="rightNumber"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-sem" onclick="checkAnswer()">Semak Jawapan</button>
+      <button class="btn-jwp" onclick="showAnswer()">Dedahkan Jawapan</button>
+      <button class="btn-baru" onclick="generateNewQuestion()">Soalan Baharu</button>
+      <button class="btn-guru" onclick="toggleTeacherPanel()">Mod Guru</button>
+    </div>
+
+    <div class="message" id="message"></div>
+    <div class="working" id="workingBox"></div>
+
+    <div class="teacher-panel" id="teacherPanel">
+      <label>Nombor di atas (jumlah)<input type="number" id="teacherTop" value="56000"></label>
+      <label>Nombor bawah kanan<input type="number" id="teacherRight" value="29700"></label>
+      <button class="btn-guru" onclick="applyTeacherValues()">Guna Nilai Ini</button>
+    </div>
+
+    <div class="credit">BBM Digital Matematik • Inovasi Trez-Anu Nombor</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
